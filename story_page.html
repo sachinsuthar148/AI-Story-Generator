@@ -1,178 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Story Generator - Technicolor Dream</title>
-  <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
- />
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      color: #fff;
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: 15px;
-      background: linear-gradient(45deg, #020024 0%, #090979 35%, #00d4ff 100%);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 3rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #c2c2c2, #e9ec1f, #b6d8db, #85c7ee, #ec94e1);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: slideInDown 1s ease-out;
-    }
-    #story-form {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      animation: slideInUp 1s ease-out;
-    }
-    #heading-input {
-      flex-grow: 1;
-      padding: 1rem;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      font-size: 1rem;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-    #heading-input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
-    #heading-input:focus {
-      outline: none;
-      border-color: #a8eb12;
-      background-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 15px rgba(168, 235, 18, 0.5);
-    }
-    #generate-btn {
-      padding: 1rem 2rem;
-      background-color: #a8eb12;
-      color: #051937;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      animation: pulse 2s infinite;
-    }
-    #generate-btn:hover {
-      background-color: #00bf72;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(0, 191, 114, 0.7);
-    }
-    #story-output {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      min-height: 150px;
-      font-size: 1.1rem;
-      color: #f1f1f1;
-    }
-    .loader {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #a8eb12;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    footer {
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    @keyframes slideInDown {
-      from { transform: translateY(-100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes slideInUp {
-      from { transform: translateY(100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(168, 235, 18, 0.7); }
-      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(168, 235, 18, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(168, 235, 18, 0); }
-    }
-  </style>
-</head>
-<body>
-  <h1>AI Story Generator</h1>
-  <div id="story-form">
-    <input type="text" id="heading-input" placeholder="Imagine a world and give it a name...">
-    <button id="generate-btn">Weave a Tale</button>
-  </div>
-  <div id="story-output">
-    <p>The stage is set for your story...</p>
-  </div>
+    <meta charset="UTF-8">
+    <!-- Viewport is essential for responsive behavior -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Story Generator - Technicolor Dream</title>
 
+    <!-- Animate.css CDN -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
 
-  <footer>
-    <p>&copy; 2025 Sachin Suthar. All Rights Reserved.</p>
-  </footer>
-
-
-  <script>
-    document.getElementById('generate-btn').addEventListener('click', async () => {
-      const heading = document.getElementById('heading-input').value;
-      const storyOutput = document.getElementById('story-output');
-
-
-      if (!heading) {
-        storyOutput.innerHTML = '<p style="color: #ff5e6c;">A story needs a beginning. Please enter a heading.</p>';
-        return;
-      }
-
-
-      storyOutput.innerHTML = '<div class="loader"></div>';
-      storyOutput.classList.add('animate__animated', 'animate__fadeIn');
-
-
-      try {
-        const response = await fetch('/generate-story', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ heading: heading }),
-        });
-
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok.');
+    <style>
+        :root {
+            /* Base spacing and font size for scaling */
+            --spacing: 1rem;
+            --max-width: 900px;
         }
 
+        * {
+            box-sizing: border-box;
+        }
 
-        const data = await response.json();
-        storyOutput.innerHTML = `<p>${data.story}</p>`;
-        storyOutput.classList.remove('animate__fadeIn');
-        storyOutput.classList.add('animate__animated', 'animate__zoomIn');
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            padding: var(--spacing);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background: linear-gradient(45deg, #020024 0%, #090979 35%, #00d4ff 100%);
+        }
 
+        .page-wrapper {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 1.5rem auto;
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(2,0,36,0.9), rgba(0,212,255,0.1));
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        }
 
-      } catch (error) {
-        console.error('Error:', error);
-        storyOutput.innerHTML = '<p style="color: #ff5e6c;">The ink has dried... something went wrong. Is the backend server running?</p>';
-      }
-    });
-  </script>
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: bold;
+            background: linear-gradient(90deg, #c2c2c2, #e9ec1f, #b6d8db, #85c7ee, #ec94e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideInDown 1s ease-out;
+        }
+
+        #story-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out;
+        }
+
+        #heading-input {
+            flex-grow: 1;
+            padding: 0.9rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #heading-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #heading-input:focus {
+            outline: none;
+            border-color: #a8eb12;
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(168, 235, 18, 0.5);
+        }
+
+        #generate-btn {
+            padding: 0.9rem 1.5rem;
+            background-color: #a8eb12;
+            color: #051937;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+            will-change: transform;
+        }
+
+        #generate-btn:hover {
+            background-color: #00bf72;
+            transform: translateY(-1px);
+            box-shadow: 0 0 18px rgba(0, 191, 114, 0.7);
+        }
+
+        #generate-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        #generate-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        #story-output {
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 150px;
+            font-size: 1.05rem;
+            color: #f1f1f1;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #a8eb12;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        .error-message {
+            color: #ff5e6c;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Tablet: stack input and button vertically if space is tight */
+        @media (max-width: 900px) {
+            .page-wrapper {
+                padding: 1.5rem;
+            }
+
+            #story-form {
+                gap: 0.75rem;
+            }
+        }
+
+        /* Mobile: full-width button + single column layout */
+        @media (max-width: 768px) {
+            body {
+                align-items: stretch;
+                padding: 0.75rem;
+            }
+
+            .page-wrapper {
+                margin: 1rem auto;
+                padding: 1.25rem;
+            }
+
+            #story-form {
+                flex-direction: column;
+            }
+
+            #generate-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            #story-output {
+                font-size: 1rem;
+            }
+        }
+
+        /* Extra small phones */
+        @media (max-width: 480px) {
+            .page-wrapper {
+                border-radius: 0.75rem;
+            }
+
+            h1 {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <h1>AI Story Generator</h1>
+
+        <div id="story-form">
+            <input
+                type="text"
+                id="heading-input"
+                placeholder="Imagine a world and give it a name..."
+                maxlength="200"
+                autocomplete="off"
+            >
+            <button id="generate-btn">Weave a Tale</button>
+        </div>
+
+        <div id="story-output">
+            <p>The stage is set for your story...</p>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Sachin Suthar. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const headingInput = document.getElementById('heading-input');
+        const generateBtn = document.getElementById('generate-btn');
+        const storyOutput = document.getElementById('story-output');
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function displayError(message) {
+            storyOutput.innerHTML = '<p class="error-message">' + escapeHtml(message) + '</p>';
+        }
+
+        headingInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !generateBtn.disabled) {
+                generateBtn.click();
+            }
+        });
+
+        generateBtn.addEventListener('click', async () => {
+            const heading = headingInput.value.trim();
+
+            if (!heading) {
+                displayError('A story needs a beginning. Please enter a heading.');
+                return;
+            }
+
+            generateBtn.disabled = true;
+            headingInput.disabled = true;
+
+            storyOutput.innerHTML = '<div class="loader"></div>';
+            storyOutput.classList.add('animate__animated', 'animate__fadeIn');
+
+            try {
+                const response = await fetch('/generate-story', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ heading })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+
+                const data = await response.json();
+                const sanitizedStory = escapeHtml(data.story).replace(/\n/g, '<br>');
+                storyOutput.innerHTML = '<p>' + sanitizedStory + '</p>';
+                storyOutput.classList.remove('animate__fadeIn');
+                storyOutput.classList.add('animate__animated', 'animate__zoomIn');
+
+            } catch (error) {
+                console.error('Error:', error);
+                displayError('The ink has dried... something went wrong. Is the backend server running?');
+            } finally {
+                generateBtn.disabled = false;
+                headingInput.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
